@@ -1,0 +1,38 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: {{ template "ldap_proxy.fullname" . }}
+  labels:
+    app: {{ template "ldap_proxy.name" . }}
+    chart: {{ template "ldap_proxy.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ template "ldap_proxy.name" . }}
+      release: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ template "ldap_proxy.name" . }}
+        release: {{ .Release.Name }}
+    spec:
+      containers:
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.images.repo }}/{{ .Values.images.name }}:{{ .Values.images.tag }}"
+          ports:
+            - name: {{ .Values.service.name }}
+              containerPort: {{ .Values.service.port }}
+              protocol: {{ .Values.service.protocol }}
+          livenessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port }}
+          readinessProbe:
+            tcpSocket:
+              port: {{ .Values.service.port }}
+          securityContext:
+            runAsUser: 0
+          resources:
+{{ toYaml .Values.ldap_proxy.resources | indent 12 }}

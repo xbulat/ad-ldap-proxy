@@ -1,0 +1,29 @@
+# Default values for cycler.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+namespace: default
+
+images:
+  repo: dockerhub/xbulat
+  name: ldap-proxy
+  tag: latest
+
+service:
+  port: 389
+  type: ClusterIP
+  protocol: TCP
+  name: ldap-proxy
+
+ldap_proxy:
+  resources:
+    limits:
+      cpu: 1
+      memory: 900Mi
+    requests:
+      cpu: 1
+      memory: 900Mi
+
+resources:
+  ldap-proxy:
+    replicas: 1
